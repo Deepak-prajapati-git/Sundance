@@ -231,7 +231,7 @@
 
     /* Mobile responsive */
     @media (max-width: 900px) {
-      .prop-modal-overlay{align-items:flex-end}
+      .prop-modal-overlay{align-items:stretch; padding: 0;}
       .prop-modal-wrap {
         flex-direction: column;
         width: 100vw;
@@ -239,6 +239,7 @@
         max-height: 100dvh;
         border-radius: 0;
         overflow: hidden;
+        margin: 0;
       }
       .prop-modal-sidebar {
         width: 100%;
@@ -253,8 +254,8 @@
       .prop-modal-info h2 { font-size: 1.65rem; }
       .prop-modal-info p { font-size: .88rem; }
       
-      /* Image Viewer Fixes */
-      .prop-img-viewer { height: 45dvh; flex: none; padding: 60px 16px 12px 16px; }
+      /* Image Viewer: leave room at top for close button */
+      .prop-img-viewer { height: 45dvh; flex: none; padding: 16px 16px 12px 16px; }
       .prop-img-main-wrap { border-radius: 12px; }
       .prop-thumb-strip { padding: 12px 0; border-top: none; }
       .prop-thumb { border-radius: 8px; }
@@ -266,13 +267,14 @@
       .prop-img-nav { width: 38px; height: 38px; font-size: .9rem; }
       .prop-img-nav.left { left: 10px; }
       .prop-img-nav.right { right: 10px; }
-      .prop-modal-close { top: 12px; right: 12px; width: 38px; height: 38px; font-size: 1rem; z-index: 9999; }
-      .prop-img-counter { top: 12px; left: 12px; font-size: .7rem; padding: 4px 10px; z-index: 9999; }
+      /* Close button sits on top of prop-modal-wrap, not image viewer */
+      .prop-modal-close { top: 10px; right: 10px; width: 36px; height: 36px; font-size: .95rem; z-index: 9999; }
+      .prop-img-counter { top: 10px; left: 10px; font-size: .7rem; padding: 4px 10px; z-index: 9999; }
     }
 
     @media (max-width: 480px) {
       .prop-modal-info { padding: 18px 14px; }
-      .prop-img-viewer { height: 42dvh; padding-top: 54px; }
+      .prop-img-viewer { height: 40dvh; }
     }
   </style>
 </head>
