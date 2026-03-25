@@ -72,13 +72,13 @@ nav a:hover{color:var(--teal);background:rgba(11,122,114,.07)}
   box-shadow:0 8px 24px rgba(232,130,12,.4)!important;color:#fff!important}
 
 .menu-toggle{
-  display:none;width:42px;height:42px;
+  display:none;width:40px;height:40px;
   align-items:center;justify-content:center;
-  border-radius:10px;cursor:pointer;z-index:1001;
-  background:rgba(11,122,114,.08);color:var(--teal);
-  font-size:1.2rem;border:1.5px solid rgba(11,122,114,.18);
+  cursor:pointer;z-index:1001;padding:0;
+  background:transparent;color:var(--dark);
+  font-size:1.8rem;border:none;
   transition:all .2s}
-.menu-toggle:hover{background:rgba(11,122,114,.15);border-color:var(--teal)}
+.menu-toggle:hover{color:var(--sun)}
 
 /* ============================================================
    SHARED LAYOUT
@@ -450,12 +450,18 @@ footer{background:var(--dark);color:rgba(255,255,255,.5);padding:68px 0 0}
   .form-row{grid-template-columns:1fr}
   .hero-stats{display:none}
 
-  /* Typography adjustments */
-  .hero-content h1{font-size:3rem}
-  .hero-content p{font-size:.93rem}
-  .hero-actions{justify-content:flex-start;gap:10px}
+  /* Typography & Layout adjustments */
+  .hero-content{text-align:center;margin:0 auto}
+  .hero-content .eyebrow{margin-left:auto;margin-right:auto}
+  .hero-content h1{font-size:3rem;margin-left:auto;margin-right:auto}
+  .hero-content p{font-size:.93rem;margin-left:auto;margin-right:auto}
+  .hero-actions{justify-content:center;gap:14px}
   .hero-actions .btn-sun,.hero-actions .btn-ghost{font-size:.85rem;padding:12px 24px}
-  .sh{font-size:2rem}
+  .sh{font-size:2rem;text-align:center}
+  .slabel{display:block;text-align:center;margin-left:auto;margin-right:auto}
+  .slabel::before{content:''}
+  .ssub{text-align:center;margin-left:auto;margin-right:auto}
+  
   .about-imgs{padding-bottom:60px}
   .about-float{width:58%;right:0}
 
@@ -476,7 +482,8 @@ footer{background:var(--dark);color:rgba(255,255,255,.5);padding:68px 0 0}
   .topbar .tl{display:none}
   .topbar .tw{justify-content:center}
   .hero-content h1{font-size:2.4rem}
-  .hero-actions{flex-direction:column;align-items:flex-start}
+  .hero-actions{flex-direction:column;align-items:center}
+  .hero-actions .btn-sun,.hero-actions .btn-ghost{width:100%;justify-content:center}
   .navbar{padding:11px 14px}
   .about-float{display:none}
   .about-imgs{padding-bottom:0}
