@@ -146,6 +146,31 @@ if (formBtn) {
   });
 }
 
+/* ── MOBILE MENU TOGGLE ── */
+const menuToggle = document.getElementById('menu-toggle');
+const navList    = document.getElementById('nav-list');
+
+if (menuToggle && navList) {
+  menuToggle.addEventListener('click', () => {
+    navList.classList.toggle('active');
+    const icon = menuToggle.querySelector('i');
+    if (navList.classList.contains('active')) {
+      icon.classList.replace('fa-bars', 'fa-times');
+    } else {
+      icon.classList.replace('fa-times', 'fa-bars');
+    }
+  });
+
+  // Close menu when a link is clicked
+  navList.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      navList.classList.remove('active');
+      const icon = menuToggle.querySelector('i');
+      if (icon) icon.classList.replace('fa-times', 'fa-bars');
+    });
+  });
+}
+
 /* ── TILT effect on theme cards ── */
 document.querySelectorAll('.tcard').forEach(card => {
   card.addEventListener('mousemove', e => {
