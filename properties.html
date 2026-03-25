@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Properties — Sundance Retreats</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* ═══════════════════════════════════════════
+       PROPERTY MODAL — matches Sundance theme
+    ═══════════════════════════════════════════ */
+
+    .prop-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      background: rgba(15, 12, 8, 0.72);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .35s ease;
+    }
+    .prop-modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .prop-modal-wrap {
+      position: relative;
+      width: 94vw;
+      max-width: 1280px;
+      height: 88vh;
+      background: #faf8f4;
+      border-radius: 20px;
+      overflow: hidden;
+      display: flex;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.35), 0 0 0 1px rgba(180,150,100,.15);
+      transform: translateY(28px) scale(.97);
+      transition: transform .38s cubic-bezier(.22,.9,.36,1);
+    }
+    .prop-modal-overlay.active .prop-modal-wrap {
+      transform: translateY(0) scale(1);
+    }
+
+    /* ── Close button ── */
+    .prop-modal-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      z-index: 100;
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,.9);
+      color: #333;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,.2);
+      transition: background .2s, transform .2s, color .2s;
+    }
+    .prop-modal-close:hover { background: #c9a96e; color: #fff; transform: rotate(90deg); }
+
+    /* ── LEFT: IMAGE VIEWER ── */
+    .prop-img-viewer {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #0a0805;
+      overflow: hidden;
+      position: relative;
+      padding: 24px 0 24px 24px; /* Padding on top, bottom, and left */
+    }
+    .prop-img-main-wrap {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,.02);
+      border-radius: 12px;
+    }
+    #modal-main-img {
+      max-width: 100%;
+      max-height: 100%;
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* Better for portrait/landscape mixed content */
+      display: block;
+      transition: opacity .3s ease;
+    }
+    #modal-main-img.fading { opacity: 0; }
+
+    /* nav arrows */
+    .prop-img-nav {
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      background: rgba(0,0,0,.3);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,.1);
+      color: #fff;
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .25s ease;
+      z-index: 10;
+    }
+    .prop-img-nav:hover { background: #c9a96e; transform: translateY(-50%) scale(1.1); border-color: transparent; }
+    .prop-img-nav.left { left: 20px; }
+    .prop-img-nav.right { right: 20px; }
+
+    .prop-img-counter {
+      position: absolute;
+      top: 20px; left: 20px;
+      background: rgba(0,0,0,.5);
+      backdrop-filter: blur(4px);
+      color: #fff;
+      font-size: .75rem;
+      font-family: 'DM Sans', sans-serif;
+      padding: 4px 14px;
+      border-radius: 30px;
+      letter-spacing: .08em;
+      z-index: 10;
+    }
+
+    /* Thumbnail strip */
+    .prop-thumb-strip {
+      display: flex;
+      gap: 8px;
+      padding: 12px 20px;
+      background: rgba(0,0,0,.6);
+      backdrop-filter: blur(10px);
+      overflow-x: auto;
+      scrollbar-width: none;
+      flex-shrink: 0;
+      height: 84px;
+      align-items: center;
+      border-top: 1px solid rgba(255,255,255,.05);
+    }
+    .prop-thumb-strip::-webkit-scrollbar { display: none; }
+
+    .prop-thumb {
+      width: 80px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 4px;
+      cursor: pointer;
+      opacity: .4;
+      border: 2px solid transparent;
+      transition: all .2s ease;
+      flex-shrink: 0;
+    }
+    .prop-thumb:hover { opacity: .8; }
+    .prop-thumb.active {
+      opacity: 1;
+      border-color: #c9a96e;
+      transform: scale(1.05);
+    }
+
+    /* ── RIGHT: SIDEBAR ── */
+    .prop-modal-sidebar {
+      width: 400px;
+      min-width: 350px;
+      display: flex;
+      flex-direction: column;
+      background: #faf8f4;
+      border-left: 1px solid #e2d9c5;
+    }
+
+    /* Info section inside sidebar */
+    .prop-modal-info {
+      flex: 1;
+      padding: 40px 35px;
+      overflow-y: auto;
+      background: #faf8f4;
+    }
+    .prop-modal-info::-webkit-scrollbar { width: 5px; }
+    .prop-modal-info::-webkit-scrollbar-thumb { background: #e2d9c5; border-radius: 10px; }
+
+    .prop-modal-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .prop-modal-info h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #1a1610;
+      margin: 0 0 16px;
+      line-height: 1.1;
+    }
+    .prop-modal-info p {
+      font-size: .95rem;
+      color: #4a443a;
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+
+    .prop-modal-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .prop-feat-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      border: 1px solid #e6e0d2;
+      color: #5a4e3a;
+      font-size: .75rem;
+      font-family: 'DM Sans', sans-serif;
+      padding: 7px 12px;
+      border-radius: 6px;
+    }
+    .prop-feat-pill i { color: #c9a96e; font-size: .8rem; }
+
+    /* Mobile responsive */
+    @media (max-width: 900px) {
+      .prop-modal-wrap { flex-direction: column; width: 100vw; height: 100vh; border-radius: 0; }
+      .prop-modal-sidebar { width: 100%; min-width: unset; height: auto; border-left: none; border-top: 1px solid #e2d9c5; }
+      .prop-modal-info { padding: 30px 20px; }
+      .prop-modal-info h2 { font-size: 1.8rem; }
+      .prop-img-viewer { height: 50vh; flex: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div id="cur"></div>
+<div id="curR"></div>
+
+<div id="site-header">
+  <div class="navbar">
+    <a href="index.html" class="logo">
+      <img src="Assets/fav.png" alt="" height="40" width="40">
+      <div>
+        <span class="logo-name">Sundance Retreats</span>
+        <span class="logo-sub">&amp; Holidays</span>
+      </div>
+    </a>
+    <nav>
+      <a href="index.html#about">About</a>
+      <a href="index.html#themes">Experiences</a>
+      <a href="https://www.sundanceholidaysretreat.com/event-list">Events</a>
+      <a href="https://www.sundanceholidaysretreat.com/blog">Blog</a>
+      <a href="properties.html" class="active">Properties</a>
+      <a href="index.html#contact" class="nav-cta">Plan a Trip</a>
+    </nav>
+  </div>
+</div>
+
+<main style="padding:80px 18px;">
+  <div class="wrap">
+    <div style="text-align:center;margin-bottom:40px">
+      <div class="slabel">Luxury Stays</div>
+      <h2 class="sh">Our Collection</h2>
+    </div>
+    
+    <!-- Lonavla Collection -->
+    <div style="margin-bottom:40px">
+      <div class="bgrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-bottom:28px">
+
+        <!-- Card 1: VN Villa -->
+        <div class="bcard" data-prop="vn-villa">
+          <div class="b-img">
+            <img src="Assets/Properties/list/VN-Villa/Photos/1.jpg" onerror="this.src='https://images.unsplash.com/photo-1505691723518-36a0df2f0b6b?w=900&q=80'" alt="VN Villa">
+            <span class="b-tag">Lonavla · VN Villa</span>
+          </div>
+          <div class="b-body">
+            <div class="b-date">Villa · 6 Guests</div>
+            <h3>VN Villa</h3>
+            <p>Cozy villa with panoramic valley views and private bonfire area.</p>
+            <a href="#" class="b-read prop-open-btn" data-prop="vn-villa">View Details <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+
+        <!-- Card 2: Hangout Farm -->
+        <div class="bcard" data-prop="hangout">
+          <div class="b-img">
+            <img src="Assets/Properties/list/Hangout/2025-02-19 (1).webp" onerror="this.src='https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=900&q=80'" alt="Hangout Farm">
+            <span class="b-tag">Lonavla · Hangout</span>
+          </div>
+          <div class="b-body">
+            <div class="b-date">Cottage · 12 Guests</div>
+            <h3>Hangout</h3>
+            <p>Quiet farmhouse stay surrounded by green slopes — ideal for retreats.</p>
+            <a href="#" class="b-read prop-open-btn" data-prop="hangout">View Details <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap" style="padding:48px 0 28px">
+    <div style="display:flex; justify-content:center; margin-bottom: 24px;">
+      <a href="https://www.sundanceholidaysretreat.com" class="logo" style="display:inline-flex; text-align: left;">
+        <img src="./Assets/fav.png" alt="" height="40px" width="40px">
+        <div>
+          <span class="logo-name" style="color:#fff">Sundance Retreats</span>
+          <span class="logo-sub">&amp; Holidays</span>
+        </div>
+      </a>
+    </div>
+    <div style="text-align:center;color:rgba(255,255,255,.4); font-size: .8rem;">© 2026 Sundance Retreats &amp; Holidays. All rights reserved.</div>
+  </div>
+</footer>
+
+
+<!-- ══════════════════════════════════════════
+     PROPERTY MODAL
+══════════════════════════════════════════ -->
+<div id="prop-modal" class="prop-modal-overlay" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="prop-modal-wrap">
+
+    <button class="prop-modal-close" id="modal-close" aria-label="Close modal">
+      <i class="fas fa-times"></i>
+    </button>
+
+    <!-- LEFT: Image viewer -->
+    <div class="prop-img-viewer">
+      <div class="prop-img-main-wrap">
+        <img id="modal-main-img" src="" alt="Property image">
+        <button class="prop-img-nav left" id="img-prev" aria-label="Previous image">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="prop-img-nav right" id="img-next" aria-label="Next image">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        <div class="prop-img-counter" id="img-counter">1 / 1</div>
+      </div>
+
+      <!-- Thumbnail carousel -->
+      <div class="prop-thumb-strip" id="prop-thumb-strip"></div>
+    </div>
+
+    <!-- RIGHT: Sidebar (Details) -->
+    <div class="prop-modal-sidebar">
+      <!-- Info section -->
+      <div class="prop-modal-info">
+        <div class="prop-modal-meta">
+          <span id="modal-tag" class="b-tag" style="position:static;transform:none;font-size:.68rem;padding:4px 10px;white-space:nowrap"></span>
+          <span id="modal-type" class="b-date" style="font-size:.75rem"></span>
+        </div>
+        <h2 id="modal-title"></h2>
+        <p id="modal-desc"></p>
+        
+        <div style="font-family:'Cormorant Garamond',serif; font-size:1.15rem; font-weight:600; color:#1a1610; margin-bottom:12px;">Ameneties & Features</div>
+        <div class="prop-modal-features" id="modal-features"></div>
+        
+        <div class="prop-modal-actions" style="margin-top:35px; display:flex; gap:12px;">
+          <a href="index.html#contact" class="btn-sun" style="flex:1; display:flex; justify-content:center; align-items:center; gap:8px; padding:15px; font-size:.85rem;">
+            Enquiry <i class="fas fa-arrow-right"></i>
+          </a>
+          <a id="modal-brochure" href="#" target="_blank" class="btn-ghost" style="flex:1; display:flex; justify-content:center; align-items:center; gap:8px; padding:15px; font-size:.85rem; background: rgba(11, 122, 114, 0.08); border: 1px solid rgba(11, 122, 114, 0.2); color: var(--teal);">
+            Brochure <i class="fas fa-file-pdf"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script src="script.js"></script>
+<script src="properties-modal.js"></script>
+
+</body>
+</html>
