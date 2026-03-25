@@ -71,7 +71,7 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      background: #0a0805;
+      background: radial-gradient(circle at top right, #24211a 0%, #0a0805 100%);
       overflow: hidden;
       position: relative;
       padding: 24px 0 24px 24px; /* Padding on top, bottom, and left */
@@ -83,7 +83,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(255,255,255,.02);
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-radius: 12px;
     }
     #modal-main-img {
@@ -92,6 +94,7 @@
       width: 100%;
       height: 100%;
       object-fit: contain; /* Better for portrait/landscape mixed content */
+      border-radius: 12px;
       display: block;
       transition: opacity .3s ease;
     }
@@ -232,8 +235,8 @@
       .prop-modal-wrap {
         flex-direction: column;
         width: 100vw;
-        height: 92vh;
-        border-radius: 20px 20px 0 0;
+        height: 95vh;
+        border-radius: 24px 24px 0 0;
         overflow: hidden;
       }
       .prop-modal-sidebar {
@@ -248,19 +251,27 @@
       .prop-modal-meta { justify-content: center; }
       .prop-modal-info h2 { font-size: 1.65rem; }
       .prop-modal-info p { font-size: .88rem; }
-      .prop-img-viewer { height: 40vh; flex: none; padding: 16px 0 16px 16px; }
+      
+      /* Image Viewer Fixes */
+      .prop-img-viewer { height: 45vh; flex: none; padding: 20px 16px 12px 16px; }
+      .prop-img-main-wrap { border-radius: 12px; }
+      .prop-thumb-strip { padding: 12px 0; border-top: none; }
+      .prop-thumb { border-radius: 8px; }
+      
       .prop-modal-features { grid-template-columns: 1fr; gap: 8px; text-align: left; }
-      .prop-modal-actions { flex-direction: column; gap: 10px; }
+      .prop-modal-actions { flex-direction: column; gap: 10px; padding-bottom: 20px; }
       .prop-modal-actions a { flex: unset; width: 100%; justify-content: center; }
       
+      .prop-img-nav { width: 38px; height: 38px; font-size: .9rem; }
       .prop-img-nav.left { left: 10px; }
       .prop-img-nav.right { right: 10px; }
-      .prop-modal-close { top: 10px; right: 10px; }
+      .prop-modal-close { top: 16px; right: 16px; width: 38px; height: 38px; font-size: 1rem; }
+      .prop-img-counter { top: 10px; left: 10px; font-size: .7rem; padding: 4px 10px; }
     }
 
     @media (max-width: 480px) {
       .prop-modal-info { padding: 18px 14px; }
-      .prop-img-viewer { height: 35vh; }
+      .prop-img-viewer { height: 42vh; }
       .prop-modal-wrap { height: 96vh; }
     }
   </style>
